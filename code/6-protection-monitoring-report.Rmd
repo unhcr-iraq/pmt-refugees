@@ -1,0 +1,132 @@
+---
+output: 
+  pdf_document: 
+    fig_caption: yes
+    fig_crop: no
+    fig_height: 6
+    fig_width: 10
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    template: D:/R-project/pandoc-templates/default.latex
+    
+title: "Protection Monitoring"
+
+author: "Information Management - Regional Protection Service - Office of the Director - UNHCR MENA"
+abstract: "The objective of the analysis is to identify the variables that influence the ressettlement process. The metrics of the resettlement process is done by the comparison between date for the 3 major ressettlement events."
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+
+thanks: "This report is produced with the R statistical language. The analysis script is available upon request to Edouard Legoupil, Snr IMO, legoupil@unhcr.org."
+
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+# spacing: double
+---
+
+This reports presents the result of protection monitoring in Iraq. 
+
+The questionnaire covers information about:
+ * household profiles as well as description of the displacement & movement pattern
+ * Accomdation & Livelihood status
+ * Documentation, civil status & registration
+ * Specific needs
+ * Already received assistance
+
+```{r , echo=FALSE, warning=FALSE, message=FALSE, cache=TRUE}
+
+##Load packages
+library(classInt)
+library(cluster)
+library(factoextra)
+library(rmarkdown)
+library(xtable)
+library(knitr)
+library(pander)  ## library to format regression output in Rmd
+library(lme4)
+library(lmtest)
+library(plyr)
+library(car)
+library(ggplot2)
+library(ggthemes)
+library(ggrepel)
+library(reshape2)
+
+```
+
+# Intro: 
+
+## Monitoring Vs Baseline Assessment
+
+As such, the surveyed population does not represent a representative sample of all refugees in Iraq.
+
+## Household demographics 
+
+Data were collected during field operations. 
+
+In this first part we will analyse the profile of the surveyed household and compare it with the information gathered through regular registration. 
+
+This comparison 
+
+Number of persons in Household  / Representativity compared to registration database
+
+
+
+
+
+Recognisable movement patterns
+Current intentions? If returning to area of origin, why?
+
+# 1. Current Protection capabilities: 
+
+Availibility of shelters
+
+Availibility of livelihood
+
+Registration with MoMD & residency status
+
+If registered, has family received cash assistance?
+
+Does the household have residency? 
+
+
+# 2. Identified Protection Risks
+
+
+### Risk of not having document
+Reasons for not registering with MoMD
+
+If not able to obtain residency, why?
+
+
+Numbers of households with missing documentation
+
+### Risk of Eviction & Detention
+Is there & Why is there a risk of eviction?
+
+Detention
+
+### Risk of not feeling safe
+Specific needs
+
+
+
+# 3. Protection priorities
+
+In this last part, we will analyse the relation between capabilities & expressed protection risk
+
+Relation between accomodation type /location & eviction risk?
+
+Relation between accomodation type /location & women feeling safe at home?
+
+Relation between household profile / location & documentation issues?
+
+Relation between household profile / location & received assistance (cash fromt he gvt or direct assistance from UN/NGO)?
+
+Relation between household profile / minor women pregnant
+
+Relation between minor women pregnant / assistance from UN/NGO
+
+Relation between detention and household profile?
+
+Specific needs for referral
