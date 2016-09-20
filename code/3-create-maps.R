@@ -1,3 +1,9 @@
+
+################################################################
+### Eliminate record without coordinates & create a specific Dataframe for maps
+datasp <-data[!rowSums(is.na(data["lat"])), ]
+
+
 ## testing a plot of coordinates
 plot(datasp$lat, datasp$long )
 

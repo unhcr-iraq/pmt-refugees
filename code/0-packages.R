@@ -87,6 +87,8 @@ library(plyr)
 
 library(FactoMineR)
 
+library(stringr)
+
 ## gui for Code reformatting
 ## tidy.gui('RGtk2')
 

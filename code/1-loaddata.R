@@ -7,6 +7,7 @@ source("code/0-packages.R")
 
 
 ################################################################
+## Load the data dump from the data collection server -- here we skip the first line
 rm(data)
 data <- read.csv("data/data.csv", encoding="UTF-8", na.strings="n/a", skip=1)
 
@@ -22,17 +23,22 @@ attributes(data)$variable.labels <- datalabel[ , 15]
 #names(data)
 
 ################################################################
-### Recognise date from format: "01-01-2009 03:41:25"
-str(data$end)
-data$start1 <- as.Date(as.character(data$start), "%d-%m-%Y %h:%m:%s")
-data$end1 <- as.Date(as.character(data$end), format = "%d-%m-%Y %h:%m:%s")
-
-################################################################
 ####  extracting coordinates from dataset
 data$geo <- as.character(data$GPS_location)
 options(digits = 15)
 data$lat <- as.numeric(substr(data$geo , 1,13))
 data$long <- as.numeric(substr( data$geo, 15,27))
+
+## Create a variable that sum up all subdistrict & camp
+data$subgov <- paste0(data$Location.Erbil_districts, data$Location.Suli_districts, data$Location.Dahuk_districts, data$Location.camp_name)
+
+
+################################################################
+### Recognise date from format: "01-01-2009 03:41:25"
+str(data$end)
+data$start1 <- as.Date(as.character(data$start), "%d-%m-%Y %h:%m:%s")
+data$end1 <- as.Date(as.character(data$end), format = "%d-%m-%Y %h:%m:%s")
+
 
 #str(data)
 
@@ -41,16 +47,10 @@ data$long <- as.numeric(substr( data$geo, 15,27))
 
 
 
-################################################################
-### Eliminate record without coordinates & create a specific Dataframe for maps
-datasp <-data[!rowSums(is.na(data["lat"])), ]
-
 
 ################################################################
 ## check some aggregated figures for the assessment
 
-## Create a variable that sum up all subdistrict & camp
-data$subgov <- paste0(data$Location.Erbil_districts, data$Location.Suli_districts, data$Location.Dahuk_districts, data$Location.camp_name)
 
 ## Build aggregation to be compared with Registration data
 data.gov <- aggregate(cbind(Household_information.Family_Size) ~ Location.Governorate, data = data, FUN = sum, na.rm = TRUE)
