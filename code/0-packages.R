@@ -11,6 +11,7 @@ packages <- c(
   "Hmisc", # generate a detailled describtion of a given dataset 
   "formatR", #,  used to format the code
   "ggplot2", ## advanced graphics
+  "ggrepel", ## Add labels in ggplot2 scatterplot
   "ggthemes", ## load different cusotmised themes for ggplot2: excel, stata, economist, tufte, wall street journal...
   "grid", "gridExtra","scales", # package for elegant data visualization using the Grammar of Graphics
   "vcd", # Visualisation of categorical data
@@ -56,6 +57,7 @@ library(rattle)
 library(car)
 library(plyr)
 library(ggplot2) ## The grammar of graphics!
+library(ggrepel) ## add labels in ggplot2 scatterplot
 library(extrafont) ## Additional fonts
 library(ggthemes) ## Additional themes for gplot2
 library(zoo) ## Manage reformatting of date
@@ -74,6 +76,7 @@ gpclibPermit()
 library(lubridate)
 library(date)
 library(gdata)
+library(grid)
 library(gridExtra)
 library(scales)
 #library(formatR)

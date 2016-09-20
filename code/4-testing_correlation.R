@@ -5,7 +5,7 @@
 
 names(data)
 
-
+## http://www.statmethods.net/stats/frequencies.html
 
 prop.table(table(data$Household_information.Family_Size))
 
