@@ -328,26 +328,17 @@ for (i in 6:133 ) {
 
 
 ### Now let's create propoortion graphs --
-
 for (i in 6:133 ) {
   rm(variablename)
   variablename <- names(data.single)[i]
   title <- attributes(data.single)$variable.labels[i]
   rm(freq)
-  
   ## Simple proportion
   #frequ <- as.data.frame(prop.table(table (data.single[ , i])))
-  ## proportion for both the variable and subgovernorate
-  #frequ <- as.data.frame(prop.table(table (data.single[ , i],data.single$subgov)))
-  
-  ## Proportion ready to be presented in facted way
-  frequ <- melt(ddply(data.single,.(subgov),function(x){prop.table(table(data.single[ , i]))}),id.vars = 1)
-  
-  plot <- ggplot(aes(x=variable, y=value), data=frequ) +
-   geom_bar( stat="identity",fill="#2a87c8",colour="#2a87c8")  +
-   #scale_y_continuous(labels=format_si()) +
+  plot <- ggplot(data.single, aes(data.single[ , i])) +
+    geom_bar(aes(y = ..count.. / sapply(PANEL, FUN=function(x) sum(count[PANEL == x]))),fill="#2a87c8",colour="#2a87c8") +
+    facet_wrap(~subgov, ncol=4) +
    guides(fill=FALSE) + 
-   facet_wrap(~ subgov , ncol=3) +
    ylab("Frequency") +
    xlab("") + 
    coord_flip() + 
@@ -355,5 +346,6 @@ for (i in 6:133 ) {
    ggtitle(title)+
    theme(plot.title=element_text(face="bold", size=9),
          plot.background = element_rect(fill = "transparent",colour = NA))
-   ggsave(filename=paste("out/",i,"_",variablename,"_frequency.png",sep=""), plot=plot, width=8, height=6,units="in", dpi=300)
+   ggsave(filename=paste("out/",i,"_",variablename,"_frequency.png",sep=""), plot=plot, width=8, height=10,units="in", dpi=300)
 }  
+
