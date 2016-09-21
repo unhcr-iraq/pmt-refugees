@@ -7,9 +7,16 @@ source("code/0-packages.R")
 
 
 ################################################################
-## Load the data dump from the data collection server -- here we skip the first line
+## Load the data dump from the data collection server --
+# here we skip the first line because the dataset is extracted through RAIS - If extracted through Kobo/ODK no need to skip the first line
+## Note hte encoding -- we do not use UTF8 but WIN1256 because of the arabic character inside the csv file
+
 rm(data)
-data <- read.csv("data/data.csv", encoding="UTF-8", na.strings="n/a", skip=1)
+data <- read.csv("data/data.csv", 
+                 encoding="UTF8",
+                # encoding="Windows-1256",
+                # encoding="iso-8859-6",
+                 na.strings="n/a", skip=1)
 
 
 ################################################################
@@ -35,32 +42,44 @@ data$subgov <- paste0(data$Location.Erbil_districts, data$Location.Suli_district
 
 ################################################################
 ### Recognise date from format: "01-01-2009 03:41:25"
-str(data$end)
-data$start1 <- as.Date(as.character(data$start), "%d-%m-%Y %h:%m:%s")
-data$end1 <- as.Date(as.character(data$end), format = "%d-%m-%Y %h:%m:%s")
+
+## lct <- Sys.getlocale("LC_TIME"); Sys.setlocale("LC_TIME", "C")
+## Sys.setlocale("LC_TIME", lct)
+
+#data$start2 <- as.Date(as.character(data$start), "%d-%m-%Y %h:%m:%s")
+data$start1 <- strptime(as.character(data$start), "%d-%m-%Y %H:%M:%OS")
+data$end1 <- strptime(as.character(data$end), format = "%d-%m-%Y %H:%M:%OS")
+data$duration <- data$end1 - data$start1
+data$start2 <- as.Date(data$start1)
+
+#str(data$end1)
 
 
-#str(data)
+###################################################################
+##### Clean Organisation name field for better stats
+## First we write to CSV all the unique partners name 
+## Organization_name is factor so we can simply extract the levles and put them in a data frame
+write.csv(as.data.frame(levels(as.factor(data$Organization_name))), "data/organisation.csv")
+
 
 ################################################################
 ### Set up the correct order for the factor variables so that graphs are correctly displayed
 
 ################################################################
 ## extracting unique choice questions -- 
-data.single.label <- as.data.frame(datalabel[datalabel$type %in% c("select_one", "select_mutiple") ,7])
+#data.single.label <- as.data.frame(datalabel[datalabel$type %in% c("select_one", "select_mutiple") ,7])
 
 ## Export in CSV so that a manual Review of this file can be performed in order to get a list of selected variables to map
-write.csv(data.single.label, "data/datasinglelabel.csv")
-rm(data.single.label)
+#write.csv(data.single.label, "data/datasinglelabel.csv")
+#rm(data.single.label)
 
-names(data)
+#names(data)
 
 data.single <- data[ , c("Location.Governorate", "subgov", 
-                         #)] 
                          "lat", "long",
                          "Household_information.Family_Size",
                          ## Questions with multiple choices - put them here so that the grah generation in loop works well
-                         
+                         "duration", "start2",
                          
                          "Location.assessment_camp_noncamp",
                          "Household_information.Sex_of_PA",

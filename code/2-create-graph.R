@@ -39,24 +39,51 @@ rm(box1,box1,box2,box3,box4 )
 
 ##########################################################
 ##  Line chart to see evolution over time
-lineplot <- ggplot(data, aes(x = start, y = Household_information.Family_Size)) + 
-  geom_line() +
-  scale_x_date(labels = date_format("%b %Y")) +
-  labs(x = "Time (months)", y = "# if Ind") +
-  ggtitle("# Individual monitored") +
+lineplot <- ggplot(data, aes(x = start2, y = Household_information.Family_Size)) + 
+  geom_line() ++
+  #stat_summary(fun.y=sum, geom="line") +
+  scale_x_date(limits = c(Sys.Date() - 250, NA), labels = date_format("%b %Y")) +
+  #scale_x_date(labels = date_format("%b %Y")) +
+  labs(x = "Time (months)", y = "# of Ind") +
+  ggtitle("# of Individuals monitored") +
   theme_bw() + 
-  coord_fixed() + ##used to maintain the adspect ratio of the plot when it needs to be saved
+  #coord_fixed() + ##used to maintain the adspect ratio of the plot when it needs to be saved
   theme(aspect.ratio=4/3,
-        panel.grid.major = element_blank(),
+        panel.grid.major  = element_line(colour = "white"),
         panel.grid.minor = element_blank(),
         plot.title = element_text(size = rel(1.2), face = "bold"))
 lineplot
 ggsave("out/lineplot.png",lineplot, width=10, height=5, units="in", dpi=300)
 
 
+##########################################################
+### Histogramm
+
+p1 <- ggplot(data, aes(x = start2)) + 
+  geom_histogram(binwidth = 7, fill="#2a87c8", colour="white") +
+ # scale_x_continuous(breaks = seq(0, 100, 20), limits = c(-5, 100),  expand = c(0, 0)) +
+  scale_x_date(limits = c(Sys.Date() - 250, NA), labels = date_format("%b %Y")) +
+ # scale_y_continuous(breaks = seq(0, 40, 10), expand = c(0, 2)) +
+  labs(x = "Period", y = "Count of Monitoring Visit") +
+  theme_bw() +
+  theme(panel.grid.major = element_line(colour = "white"),
+        panel.grid.minor = element_blank())
+p1
 
 
+p2 <- ggplot(data, aes(x = start2)) + 
+  geom_histogram(binwidth = 7, fill="#2a87c8", colour="white") +
+  # scale_x_continuous(breaks = seq(0, 100, 20), limits = c(-5, 100),  expand = c(0, 0)) +
+  scale_x_date(limits = c(Sys.Date() - 250, NA), labels = date_format("%b %Y")) +
+  # scale_y_continuous(breaks = seq(0, 40, 10), expand = c(0, 2)) +
+  labs(x = "Period", y = "Count of Monitoring Visit") +
+  facet_wrap(~ Organization_name , ncol=3) +
+  theme_bw() +
+  theme(panel.grid.major = element_line(colour = "white"),
+        panel.grid.minor = element_blank())
+p2
 
+#######################################################
 ###### Testing a first graph with GGPlot2
 #### Bar graph to show repartition for categories
 bar.Housing.Assessor_How_do_you_evaluate_ <- ggplot(data=data, aes(x=reorder(Housing.Assessor_How_do_you_evaluate_,Housing.Assessor_How_do_you_evaluate_,
@@ -96,7 +123,7 @@ p <- ggplot(data.frame(data.single) , aes(y=data.single$Household_information.Fa
       ylab("# of Ind") +
       scale_y_continuous(labels=format_si())
 
-for (i in 6:133 ) {
+for (i in 8:135 ) {
   rm(variablename)
   variablename <- names(data.single)[i]
   title <- attributes(data.single)$variable.labels[i]
@@ -170,5 +197,28 @@ for (i in 6:133 ) {
    theme(plot.title=element_text(face="bold", size=9),
          plot.background = element_rect(fill = "transparent",colour = NA))
    ggsave(filename=paste("out/",variablename,"_frequency.png",sep=""), plot=plotfreq, width=8, height=10,units="in", dpi=300)
+}  
+
+
+
+## histogramme to display event occurence over time
+## not yet working 
+for (i in 32:135 ) {  
+  i<- 33
+  rm(variablename)
+  variablename <- names(data.single)[i]
+  title <- attributes(data.single)$variable.labels[i]
+   histo <- ggplot(data.single, aes(x = start2)) + 
+     geom_histogram(binwidth = 7, fill="#2a87c8", colour="white") +
+     scale_x_date(limits = c(Sys.Date() - 250, NA), labels = date_format("%b %Y")) +
+     labs(x = "Period", y = "Count of Monitoring Visit") +
+     facet_wrap(~ aes_string(names(data.single)[i]) , ncol=1) +
+    # facet_wrap(~ variablename , ncol=1) +
+    # facet_wrap(~ Household_information.number_members_changed , ncol=1) +
+     ggtitle(title)+
+     theme(plot.title=element_text(face="bold", size=9),
+           panel.grid.major = element_line(colour = "white"),
+           panel.grid.minor = element_blank())
+   ggsave(filename=paste("out/",variablename,"_histo.png",sep=""), plot=histo, width=12, height=6,units="in", dpi=300)
 }  
 

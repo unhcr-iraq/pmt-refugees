@@ -146,8 +146,16 @@ ggsave("out/maphex.png", maphex, width=8, height=6,units="in", dpi=300)
 # the mapping for x-values that are changing will be the actual string and not a variable i.
 
 
+
+footnote <- 
+  paste("Note. Z-scores for Districts or camps are expressed in terms of \n",
+        "standard deviations from their means.",
+        "Blue indicates above the global mean\n",
+        "while read indicates below the global mean\n", 
+        " for those who responded Yes to that question.")
+
 for (i in 4:103 ) {
-  #i <- 2
+  #i <- 4
   variablename <- names(subgovcentroid.z)[i]
   title <- attributes(subgovcentroid.z)$variable.labels[i]
   #title <- variablename
@@ -161,18 +169,25 @@ for (i in 4:103 ) {
                      data=subgovcentroid.z ,size=2, fontface='bold', color='black',  box.padding=unit(0.25, "lines"),
                      point.padding=unit(0.5, "lines")) +
     ## Annotation to indicate z-score : Z-scores are expressed in terms of standard deviations from their means
-    annotate("text", x=1, y=2.9, size=4, 
-             label="Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean") +
+   # annotate("text",  x=4, y=25, size=8, 
+    #         #label="Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean") +
+    #         label="Test") +
+    
+    labs(x = "Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean for those who responded Yes to that question while read indicates below the global mean.") +
     ggtitle(title) +
     #coord_cartesian() +
     theme(
           plot.title=element_text(face="bold", size=8),
-          axis.title.x=element_blank(),
+          axis.title.x=element_text( size=7),
           axis.title.y=element_blank(),
           axis.text.x=element_blank(),axis.ticks=element_blank(),
           axis.text.y=element_blank(),
           plot.background=element_rect(fill="transparent",colour=NA),
           legend.title=element_blank())
+
+  
+  #plot2 <- arrangeGrob(plot, sub = textGrob(paste(footnote, collapse = "\n"),   x = 0, hjust = -0.1, vjust = 0.75,   gp = gpar(fontface = "italic", fontsize = 7)))
+  #print(plot2)
   #assign(paste("plot", variablename, sep=""), plot)
   ggsave(filename=paste("out/",variablename,"_map.png",sep=""), plot=plot, width=8, height=8,units="in", dpi=300)
   rm(plot)

@@ -6,8 +6,7 @@
 subgov <- as.data.frame(unique(data$subgov))
 names(subgov)[1] <- "subgov"
 
-for (i in 30:133 ) {
-  #i <- 30
+for (i in 32:135 ) {
   rm(variablename)
   variablename <- names(data.single)[i]
   ## compute ht e proportion table
