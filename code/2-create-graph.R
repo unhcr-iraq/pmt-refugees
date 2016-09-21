@@ -202,23 +202,36 @@ for (i in 8:135 ) {
 
 
 ## histogramme to display event occurence over time
-## not yet working 
 for (i in 32:135 ) {  
-  i<- 33
+  #i<- 33
   rm(variablename)
   variablename <- names(data.single)[i]
   title <- attributes(data.single)$variable.labels[i]
+  
+  
    histo <- ggplot(data.single, aes(x = start2)) + 
      geom_histogram(binwidth = 7, fill="#2a87c8", colour="white") +
      scale_x_date(limits = c(Sys.Date() - 250, NA), labels = date_format("%b %Y")) +
      labs(x = "Period", y = "Count of Monitoring Visit") +
-     facet_wrap(~ aes_string(names(data.single)[i]) , ncol=1) +
-    # facet_wrap(~ variablename , ncol=1) +
-    # facet_wrap(~ Household_information.number_members_changed , ncol=1) +
+     facet_wrap(as.formula(paste("~", variablename)), ncol=1) +
      ggtitle(title)+
      theme(plot.title=element_text(face="bold", size=9),
            panel.grid.major = element_line(colour = "white"),
            panel.grid.minor = element_blank())
    ggsave(filename=paste("out/",variablename,"_histo.png",sep=""), plot=histo, width=12, height=6,units="in", dpi=300)
+   
+# To make it easier to compare distributions with very different counts,
+# put density on the y axis instead of the default count
+   histodens <- ggplot(data.single, aes(x = start2 , ..density.., colour = Location.Governorate, linetype=Location.Governorate)) + 
+     geom_freqpoly(binwidth = 7)  + 
+     scale_x_date(limits = c(Sys.Date() - 250, NA), labels = date_format("%b %Y")) +
+     labs(x = "Period", y = "Count of Monitoring Visit") +
+     facet_wrap(as.formula(paste("~", variablename)), ncol=1) +
+     ggtitle(title)+
+     theme(plot.title=element_text(face="bold", size=9),
+           panel.grid.major = element_line(colour = "white"),
+           panel.grid.minor = element_blank())
+   ggsave(filename=paste("out/",variablename,"_histodens.png",sep=""), plot=histodens, width=12, height=6,units="in", dpi=300)
+   
 }  
 

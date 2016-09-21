@@ -63,7 +63,21 @@ write.csv(as.data.frame(levels(as.factor(data$Organization_name))), "data/organi
 
 
 ################################################################
-### Set up the correct order for the factor variables so that graphs are correctly displayed
+### Set up the correct order for the ordered factor variables so that graphs are correctly displayed
+
+#levels(data$Specific_Needs.Categorization_of_household_vu)
+data$Specific_Needs.Categorization_of_household_vu <- factor(data$Specific_Needs.Categorization_of_household_vu,
+                levels = c("low", "moderate","high"))
+
+#levels(data$Livelihood.Monthly_family_income)
+data$Livelihood.Monthly_family_income <- factor(data$Livelihood.Monthly_family_income,
+          levels = c("less_than_120_", "more_than_120_", "more_than_350_", "more_than_500_", "more_than_750_","1_000_000_iqd_" ))
+#levels(data$Housing.Duration_of_stay_same_residenc)
+data$Housing.Duration_of_stay_same_residenc <- factor(data$Housing.Duration_of_stay_same_residenc,
+        levels = c("1__6_month",  "7__12_month","1__2_years", "more_than_2_years"))
+#levels(data$Housing.Assessor_How_do_you_evaluate_)
+data$Housing.Assessor_How_do_you_evaluate_ <- factor(data$Housing.Assessor_How_do_you_evaluate_,
+           levels = c( "very_poor", "poor" , "fair" , "good"  ))
 
 ################################################################
 ## extracting unique choice questions -- 
@@ -241,7 +255,7 @@ rm(datalabel.map, data.single.label)
 ## Now for select_multiple questions, convert 1/NUL to Yes/No
 ## ### Now we recode all variables through a loop
 #str(datasp)
-for (i in 30:133 ) {
+for (i in 32:135 ) {
   ## convert to Factor to Revalue - 
   data.single[, i] <- as.factor(data.single[, i])
   data.single[, i] <- revalue(data.single[, i], c( "1"= "Yes", "yes"= "Yes",  "0"= "No",  "no"= "No"))

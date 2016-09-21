@@ -145,15 +145,6 @@ ggsave("out/maphex.png", maphex, width=8, height=6,units="in", dpi=300)
 # Use aes_string instead of aes, so that when you look at summary(ggplot_obj), 
 # the mapping for x-values that are changing will be the actual string and not a variable i.
 
-
-
-footnote <- 
-  paste("Note. Z-scores for Districts or camps are expressed in terms of \n",
-        "standard deviations from their means.",
-        "Blue indicates above the global mean\n",
-        "while read indicates below the global mean\n", 
-        " for those who responded Yes to that question.")
-
 for (i in 4:103 ) {
   #i <- 4
   variablename <- names(subgovcentroid.z)[i]
@@ -168,28 +159,51 @@ for (i in 4:103 ) {
     geom_label_repel(aes_string(label= names(subgovcentroid.z)[1], x=names(subgovcentroid.z)[3], y=names(subgovcentroid.z)[2] ),
                      data=subgovcentroid.z ,size=2, fontface='bold', color='black',  box.padding=unit(0.25, "lines"),
                      point.padding=unit(0.5, "lines")) +
-    ## Annotation to indicate z-score : Z-scores are expressed in terms of standard deviations from their means
-   # annotate("text",  x=4, y=25, size=8, 
-    #         #label="Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean") +
-    #         label="Test") +
-    
-    labs(x = "Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean for those who responded Yes to that question while read indicates below the global mean.") +
-    ggtitle(title) +
+    labs(x = "Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean for those who responded Yes to that question while read indicates below the global mean.",
+         y = "Z-score for since the begining of the monitoring") +    ggtitle(title) +
     #coord_cartesian() +
     theme(
           plot.title=element_text(face="bold", size=8),
           axis.title.x=element_text( size=7),
-          axis.title.y=element_blank(),
+          axis.title.y=element_text( size=7),
           axis.text.x=element_blank(),axis.ticks=element_blank(),
           axis.text.y=element_blank(),
           plot.background=element_rect(fill="transparent",colour=NA),
           legend.title=element_blank())
-
-  
-  #plot2 <- arrangeGrob(plot, sub = textGrob(paste(footnote, collapse = "\n"),   x = 0, hjust = -0.1, vjust = 0.75,   gp = gpar(fontface = "italic", fontsize = 7)))
-  #print(plot2)
-  #assign(paste("plot", variablename, sep=""), plot)
   ggsave(filename=paste("out/",variablename,"_map.png",sep=""), plot=plot, width=8, height=8,units="in", dpi=300)
+  rm(plot)
+}
+
+###################################################################
+### Regenerating a series of map but only for the past 3 months
+
+for (i in 4:103 ) {
+  #i <- 4
+  variablename <- names(subgovcentroid.z.3month)[i]
+  title <- attributes(subgovcentroid.z.3month)$variable.labels[i]
+  #title <- variablename
+  plot.3month <- ggmap(googleterrain)  + 
+    geom_point(aes_string( x=names(subgovcentroid.z.3month)[3], y=names(subgovcentroid.z.3month)[2], 
+                           colour= names(subgovcentroid.z.3month)[i]), #, size=abs(as.numeric(names(subgovcentroid.z.3month)[i]))
+               data=subgovcentroid.z.3month , alpha=1, size=4 ) +
+    scale_colour_gradient2() +
+    ## adding label box 
+    geom_label_repel(aes_string(label= names(subgovcentroid.z.3month)[1], x=names(subgovcentroid.z.3month)[3], y=names(subgovcentroid.z.3month)[2] ),
+                     data=subgovcentroid.z.3month ,size=2, fontface='bold', color='black',  box.padding=unit(0.25, "lines"),
+                     point.padding=unit(0.5, "lines")) +
+    labs(x = "Z-scores for Districts or camps are expressed in terms of standard deviations from their means. \n Blue indicates above the global mean for those who responded Yes to that question while read indicates below the global mean.",
+         y = "Z-score for the past 3 months only") +
+    ggtitle(title) +
+    #coord_cartesian() +
+    theme(
+      plot.title=element_text(face="bold", size=8),
+      axis.title.x=element_text( size=7),
+      axis.title.y=element_text( size=7),
+      axis.text.x=element_blank(),axis.ticks=element_blank(),
+      axis.text.y=element_blank(),
+      plot.background=element_rect(fill="transparent",colour=NA),
+      legend.title=element_blank())
+  ggsave(filename=paste("out/",variablename,"_map3month.png",sep=""), plot=plot.3month, width=8, height=8,units="in", dpi=300)
   rm(plot)
 }
 
